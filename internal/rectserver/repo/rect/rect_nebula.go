@@ -3,8 +3,8 @@ package rect
 import (
 	"audit-rectification/internal/rectserver/model"
 	"audit-rectification/internal/rectserver/repo"
-	"context"
 	"fmt"
+	"github.com/gin-gonic/gin"
 	nebula "github.com/vesoft-inc/nebula-go/v3"
 	"net/http"
 )
@@ -24,7 +24,7 @@ func (nr *nebulaRepository) checkResultSet(prefix string, res *nebula.ResultSet)
 	return nil
 }
 
-func (nr *nebulaRepository) Fetch(ctx context.Context, str string) (model.Response, error) {
+func (nr *nebulaRepository) Fetch(c *gin.Context, str string) (model.Response, error) {
 	prefix := fmt.Sprintf("CREATE SPACE IF NOT EXISTS %s(vid_type=FIXED_STRING(20)); ", str)
 	resultSet, err := nr.Execute(prefix)
 	if err != nil {

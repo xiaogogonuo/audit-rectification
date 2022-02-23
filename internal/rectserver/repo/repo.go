@@ -2,9 +2,9 @@ package repo
 
 import (
 	"audit-rectification/internal/rectserver/model"
-	"context"
+	"github.com/gin-gonic/gin"
 )
 
 type Repository interface {
-	Fetch(ctx context.Context, str string) (model.Response, error)
+	Fetch(*gin.Context, string) (model.Response, error)
 }

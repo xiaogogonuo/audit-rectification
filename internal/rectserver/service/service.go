@@ -2,9 +2,9 @@ package service
 
 import (
 	"audit-rectification/internal/rectserver/model"
-	"context"
+	"github.com/gin-gonic/gin"
 )
 
 type Service interface {
-	Fetching(ctx context.Context, str string) (model.Response, error)
+	Fetching(*gin.Context, string) (model.Response, error)
 }

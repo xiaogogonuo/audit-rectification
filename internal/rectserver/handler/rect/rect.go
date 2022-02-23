@@ -29,6 +29,7 @@ func (hr *HandlerRect) Rect(c *gin.Context) {
 		})
 		return
 	}
+	c.Set("id", 100)
 	res, err := hr.s.Fetching(c, req.Content)
 	if err != nil {
 		c.JSON(http.StatusOK, model.Response{
@@ -38,6 +39,5 @@ func (hr *HandlerRect) Rect(c *gin.Context) {
 		})
 		return
 	}
-	c.JSON(200, res)
+	c.JSON(http.StatusOK, res)
 }
-
