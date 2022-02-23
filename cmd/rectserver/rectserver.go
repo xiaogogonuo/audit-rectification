@@ -1,11 +1,12 @@
 package main
 
 import (
-	"audit-rectification/internal/rectserver/api"
-	"audit-rectification/internal/rectserver/api/handler"
 	"audit-rectification/internal/rectserver/app"
-	"audit-rectification/internal/rectserver/repo"
-	"audit-rectification/internal/rectserver/service"
+	"audit-rectification/internal/rectserver/handler"
+	rh "audit-rectification/internal/rectserver/handler/rect"
+	"audit-rectification/internal/rectserver/initialize"
+	rr "audit-rectification/internal/rectserver/repo/rect"
+	rs "audit-rectification/internal/rectserver/service/rect"
 	"fmt"
 	"github.com/fvbock/endless"
 	"log"
@@ -14,13 +15,22 @@ import (
 )
 
 func main() {
-	rep := repo.NewMysqlRepository(nil)
-	sev := service.NewRectService(rep)
-	handle := handler.NewHandler(sev)
-	engine := app.NewGinEngine()
-	router := api.NewRouter(handle)
-	// 服务注册
-	app.Register(engine, router)
+	// 初始化nebula图数据库
+	nebula := initialize.NebulaInit()
+	// 新建nebula仓库
+	nebulaRepository := rr.NewNebulaRepository(nebula)
+	// 新建整改服务
+	rectService := rs.NewServiceRect(nebulaRepository)
+	// 新建整改handler
+	rectHandler := rh.NewHandlerRect(rectService)
+	// 新建全局handler
+	handlers := handler.NewHandle()
+	// 将整改handler添加到全局handler
+	handlers.AddHandler(rectHandler)
+	// 新建gin引擎
+	engine := app.NewEngine()
+	// 将所有handler注册到gin引擎
+	app.Register(engine, handlers)
 
 	// 不停机重启应用
 	endless.DefaultReadTimeOut = 10 * time.Second  // 读超时时间为10s

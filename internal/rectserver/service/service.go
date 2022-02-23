@@ -6,5 +6,5 @@ import (
 )
 
 type Service interface {
-	Fetch(ctx context.Context, str string) (model.Response, error)
+	Fetching(ctx context.Context, str string) (model.Response, error)
 }
